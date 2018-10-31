@@ -11,6 +11,7 @@ var uglify        = require('gulp-uglify');
 var merge         = require('merge-stream');
 
 // Where our files are located
+var cssFiles = "src/css/*.css";
 var jsFiles   = "src/js/**/*.js";
 var viewFiles = "src/js/**/*.html";
 
@@ -46,6 +47,11 @@ gulp.task('html', function() {
       .pipe(gulp.dest('./build/'));
 });
 
+gulp.task('css', function(){
+  return gulp.src(cssFiles)
+      .pipe(gulp.dest('./build/'));
+});
+
 gulp.task('views', function() {
   return gulp.src(viewFiles)
       .pipe(templateCache({
@@ -69,7 +75,7 @@ gulp.task('build', ['html', 'browserify'], function() {
   return merge(html,js);
 });
 
-gulp.task('default', ['html', 'browserify'], function() {
+gulp.task('default', ['html', 'css', 'browserify'], function() {
 
   browserSync.init(['./build/**/**.**'], {
     server: "./build",
@@ -80,7 +86,7 @@ gulp.task('default', ['html', 'browserify'], function() {
     }
   });
 
-  gulp.watch("src/index.html", ['html']);
+  gulp.watch("src/index.html", ['html', 'css']);
   gulp.watch(viewFiles, ['views']);
   gulp.watch(jsFiles, ['browserify']);
 });
